@@ -5,6 +5,8 @@ const userAgent = new UserAgent();
 
 const resourcePath = "https://www.goodreads.com";
 
+let bookCollection: string[];
+
 /**
  * Takes a collection of books
  *
@@ -30,6 +32,20 @@ const newPage = async (browser: Browser): Promise<Page> => {
 };
 
 /**
+ * @param page
+ */
+const GetTheBook = (page: Page): void => {
+  // Get one random book.
+  const book = GetRandomBook(bookCollection);
+
+  // search for book on Amazon.
+  searchOnAmazon(page, book).then(async () => {
+    // Add book to the cart
+    await addBookToCart(page);
+  });
+};
+
+/**
  * Add book to the cart.
  *
  * @param page
@@ -37,14 +53,9 @@ const newPage = async (browser: Browser): Promise<Page> => {
 const addBookToCart = async (page: Page): Promise<void> => {
   await page.waitForNavigation();
 
-  const addToCart = await page.$("#add-to-cart-button");
-
-  // Check if add to cart button is exists.
-  addToCart
-    ? await addToCart.click()
-    : () => {
-        throw new Error("Something went wrong!");
-      };
+  page.$("#add-to-cart-button").then((addToCart) => {
+    addToCart ? addToCart.click() : GetTheBook(page);
+  });
 };
 
 const searchOnAmazon = async (page: Page, title: string): Promise<void> => {
@@ -97,20 +108,21 @@ const getListOfBooks = async (page: Page): Promise<string[]> => {
     defaultViewport: null,
   });
 
-  const page: Page = await newPage(browser);
+  try {
+    const page: Page = await newPage(browser);
 
-  // To bypass reCAPTCHA -- I'm not a robot ^_~
-  await page.setUserAgent(userAgent.toString());
+    const [, books] = await Promise.all([
+      // To bypass reCAPTCHA -- I'm not a robot ^_~
+      page.setUserAgent(userAgent.toString()),
+      // Get books collection.
+      getListOfBooks(page),
+    ]);
 
-  // Get books collection.
-  const books = await getListOfBooks(page);
+    bookCollection = books;
 
-  // Get one random book.
-  const book = GetRandomBook(books);
-
-  // search for book on Amazon.
-  searchOnAmazon(page, book).then(async () => {
-    // Add book to the cart
-    await addBookToCart(page);
-  });
+    GetTheBook(page);
+  } catch (err) {
+    await browser.close();
+    throw new Error(err.message);
+  }
 })();
