@@ -91,6 +91,7 @@ const getListOfBooks = async (page: Page): Promise<string[]> => {
 (async () => {
   const browser: Browser = await puppeteer.launch({
     headless: false,
+    // TODO: Add support for cross-platform.
     executablePath:
       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     defaultViewport: null,
