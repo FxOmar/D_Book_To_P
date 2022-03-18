@@ -4,10 +4,7 @@ Help customers decide which book to purchase by selecting their preferred genre.
 
 ## Demo
 
-<iframe width="560" height="315"
-  src="https://res.cloudinary.com/di8rsna4o/video/upload/v1647571832/Screen_Recording_2022-03-18_at_3.46.07_AM_fcm1td.mov" 
-  frameborder="0">
-</iframe>
+[![Watch demo]()](https://res.cloudinary.com/di8rsna4o/video/upload/v1647571832/Screen_Recording_2022-03-18_at_3.46.07_AM_fcm1td.mov)
 
 ## Tech Stack
 
