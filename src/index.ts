@@ -88,11 +88,25 @@ const getListOfBooks = async (page: Page): Promise<string[]> => {
     waitUntil: "networkidle2",
   });
 
+  let isCategoryPage = false;
+
   /**
    * Wait for the user to navigate to the selected genre to collect the books,
    * Return a list of books names.
    **/
-  await page.waitForNavigation();
+  while (!isCategoryPage) {
+    await page.waitForNavigation();
+
+    const url = await page.url();
+
+    const extractGenreFromUrl = url.includes("best-")
+      ? url.split("best-")[1].split("-books-2020")
+      : ""; // TODO: use Regex to make it shorter.
+
+    if (extractGenreFromUrl.length > 1) {
+      isCategoryPage = true;
+    }
+  }
 
   return await page.$$eval(".pollAnswer__bookLink > img", (options) =>
     options.map((option) => option.getAttribute("alt"))
