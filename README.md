@@ -15,7 +15,7 @@ Help customers decide which book to purchase by selecting their preferred genre.
 Clone the project
 
 ```bash
-  git clone git@github.com:the-code-studio/D_Book_To_P.git
+  git clone git@github.com:FxOmar/D_Book_To_P.git
 ```
 
 Go to the project directory
